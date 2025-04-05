@@ -1,96 +1,304 @@
-import random, time
-deck = ["🔥1", "🔥2", "🔥3", "🔥4", "🔥5", "💧1", "💧2", "💧3", "💧4", "💧5", "🌱1", "🌱2", "🌱3", "🌱4", "🌱5"]
-print("Welcome to the Game!")
+import random
+import time
+cards = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
+print("Welcome to Blackjack!\n")
 time.sleep(1)
-print("Play your element cards against the computer's to win battles. Fire beats nature, nature beats water, and water beats fire.")
-time.sleep(3.5)
-print("In order to win a game, you need to win at least one turn with all three elements (fire, water, AND nature).")
-time.sleep(3.5)
-print("Have Fun!")
-time.sleep(0.75)
+print("You will be given two cards, ranging from A to K. You can ask for more cards later. Your goal is to get as close to 21 points as possible.")
+time.sleep(4)
+print("If you exceed 21 points, that is a 'bust'. If you bust, your opponent wins (unless they bust as well).")
+time.sleep(4)
+print("Have fun!")
+time.sleep(1)
+
+playerMoney = 100
+player1Money = 100
+player2Money = 100
 playAgain = "yes"
-# Loops every game
 while playAgain == "yes":
-    playerDeck = []
-    computerDeck = []
-    playerPoints = {"f": 0, "w": 0, "n": 0}
-    computerPoints = {"f": 0, "w": 0, "n": 0}
-    for i in range(4):
-        playerDeck.append(random.choice(deck))
-    for i in range(4):
-        computerDeck.append(random.choice(deck))
-    # Loops every turn
-    while (playerPoints["f"] < 1 or playerPoints["w"] < 1 or playerPoints["n"] < 1) and (computerPoints["f"] < 1 or computerPoints["w"] < 1 or computerPoints["n"] < 1):
-        print("Your deck: ", playerDeck)
-        cardPlayed = input("Which card would you like to play? Enter 'f' for fire, 'w' for water, and 'n' for nature. For example, to play 🔥3, you would type 'f3' ")
-        element = cardPlayed[0]
-        number = cardPlayed[1]
-        if element == "f":
-            cardPlayed = "🔥" + str(number)
-        elif element == "w":
-            cardPlayed = "💧" + str(number)
-        elif element == "n":
-            cardPlayed = "🌱" + str(number)
-        if cardPlayed in playerDeck:
-            playerDeck.remove(cardPlayed)
-
-        else:
-            cardPlayed = input("Please enter a card that is in your deck.")
-
-        computerCardPlayed = random.choice(computerDeck)
-        computerElement = computerCardPlayed[0]
-        if computerElement == "🔥":
-            computerElement = "f"
-        elif computerElement == "💧":
-            computerElement = "w"
-        elif computerElement == "🌱":
-            computerElement = "n"
-        computerNumber = computerCardPlayed[1]
-        print("The computer played ", computerCardPlayed, "\n")
+    version = input("Would you like to play against the computer or against another person? Enter 1 for the computer and 0 for another player. ")
+    if version == "1":
+        # Player V.S. Computer
         time.sleep(1)
-
-        if computerElement == element:
-            if computerNumber > number:
-                print("The computer won!")
-                computerPoints[computerElement] += 1
-            elif computerNumber < number:
-                print("You won!")
-                playerPoints[element] += 1
+        playerCards = []
+        playerPoints = 0
+        playerCards.append(random.choice(cards))
+        playerCards.append(random.choice(cards))
+        print("This is the player's turn")
+        time.sleep(1.5)
+        print("Your starting cards: ", playerCards)
+        for i in playerCards:
+            if i == "A":
+                playerPoints += 1
+            elif i == "J":
+                playerPoints += 11
+            elif i == "Q":
+                playerPoints += 12
+            elif i == "K":
+                playerPoints += 13
             else:
-                print("It's a draw!")
-        else:
-            if computerElement == "f" and element == "w":
-                print("You won!")
-                playerPoints[element] += 1
-            elif computerElement == "n" and element == "f":
-                print("You won!")
-                playerPoints[element] += 1
-            elif computerElement == "w" and element == "n":
-                print("You won!")
-                playerPoints[element] += 1
-            elif computerElement == "f" and element == "n":
-                print("The computer won!")
-                computerPoints[computerElement] += 1
-            elif computerElement == "w" and element == "f":
-                print("The computer won!")
-                computerPoints[computerElement] += 1
-            elif computerElement == "n" and element == "w":
-                print("The computer won!")
-                computerPoints[computerElement] += 1
-
-        newCard = random.choice(deck)
+                playerPoints += int(i)
         time.sleep(1)
-        print("You drew a", newCard)
-        playerDeck.append(newCard)
-        time.sleep(2)
         print("Your points: ", playerPoints)
-        print("Computer's points: ", computerPoints)
-        time.sleep(2)
+        bet = input("You have " + str(playerMoney) + " coins. How much would you like to bet? ")
+        playerMoney -= int(bet)
+        hitStand = "hit"
+        while hitStand == "hit" and playerPoints < 21:
+            hitStand = input("Would you like to hit or stand? ")
+            if hitStand == "hit":
+                newCard = random.choice(cards)
+                playerCards.append(newCard)
+                time.sleep(1)
+                print("You drew a(n) ", newCard)
+                playerPoints = 0
+                for i in playerCards:
+                    if i == "A":
+                        playerPoints += 1
+                    elif i == "J":
+                        playerPoints += 11
+                    elif i == "Q":
+                        playerPoints += 12
+                    elif i == "K":
+                        playerPoints += 13
+                    else:
+                        playerPoints += int(i)
+                print(playerPoints)
+                if playerPoints > 21:
+                    print("You bust!")
 
-    if (playerPoints["f"] >= 1 and playerPoints["w"] >= 1 and playerPoints["n"] >= 1) and (computerPoints["f"] < 1 or computerPoints["w"] < 1 or computerPoints["n"] < 1):
-        print("You won the game!")
-    elif (playerPoints["f"] < 1 or playerPoints["w"] < 1 or playerPoints["n"] < 1) and (computerPoints["f"] >= 1 or computerPoints["w"] >= 1 or computerPoints["n"] >= 1):
-            print("The computer won the game!")
-    playAgain = input("Would you like to play again? ")
-if playAgain == "no":
-    print("Thanks for playing!")
+        # Computer's Turn
+        computerCards = []
+        computerPoints = 0
+        print("This is the computer's turn")
+        time.sleep(1)
+        computerCards.append(random.choice(cards))
+        computerCards.append(random.choice(cards))
+        for i in computerCards:
+            if i == "A":
+                computerPoints += 1
+            elif i == "J":
+                computerPoints += 11
+            elif i == "Q":
+                computerPoints += 12
+            elif i == "K":
+                computerPoints += 13
+            else:
+                computerPoints += int(i)
+        print(computerCards)
+        time.sleep(1)
+        print(computerPoints)
+        time.sleep(1)
+        stand = False
+        while stand == False and computerPoints < 16:
+            computerHit = random.randint(1,100)
+            if computerHit <= 90:
+                computerCards.append(random.choice(cards))
+                time.sleep(1)
+                print("The computer chose to hit")
+                time.sleep(1)
+                print(computerCards)
+                computerPoints = 0
+                for i in computerCards:
+                    if i == "A":
+                        computerPoints += 1
+                    elif i == "J":
+                        computerPoints += 11
+                    elif i == "Q":
+                        computerPoints += 12
+                    elif i == "K":
+                        computerPoints += 13
+                    else:
+                        computerPoints += int(i)
+                time.sleep(0.5)
+                print(computerPoints)
+
+            else:
+                stand = True
+                time.sleep(1)
+                print("The computer chose to stand")
+                time.sleep(1)
+        while stand == False and 16 < computerPoints < 21:
+            computerHit = random.randint(1,100)
+            if computerHit > 90:
+                computerCards.append(random.choice(cards))
+                time.sleep(1)
+                print("The computer chose to hit")
+                time.sleep(0.5)
+                print(computerCards)
+                computerPoints = 0
+                for i in computerCards:
+                    if i == "A":
+                        computerPoints += 1
+                    elif i == "J":
+                        computerPoints += 11
+                    elif i == "Q":
+                        computerPoints += 12
+                    elif i == "K":
+                        computerPoints += 13
+                    else:
+                        computerPoints += int(i)
+                print(computerPoints)
+            else:
+                stand = True
+                time.sleep(1)
+                print("The computer chose to stand")
+                time.sleep(1)
+        print("Both players have finished their turns. It is now time to decide the winner.")
+        time.sleep(1)
+        if computerPoints <= 21 and playerPoints <= 21:
+            if computerPoints > playerPoints:
+                print("The computer won!")
+                print("You now have ", playerMoney, "coins!")
+            else:
+                print("You won!")
+                time.sleep(0.5)
+                playerMoney += 2 * int(bet)
+                print("You now have ", playerMoney, " coins!")
+        elif computerPoints > 21 and playerPoints > 21:
+            if computerPoints < playerPoints:
+                print("The computer won!")
+                print("You now have ", playerMoney, "coins!")
+            else:
+                print("You won!")
+                playerMoney += 2 * int(bet)
+                print("You now have", playerMoney, "coins!")
+        elif computerPoints > 21 and playerPoints <= 21:
+            print("You won!")
+            playerMoney += 2 * int(bet)
+            print("You now have", playerMoney, "coins!")
+        else:
+            print("The computer won!")
+        if playerPoints == computerPoints:
+            print("It's a draw!")
+            playerMoney += int(bet)
+            time.sleep(1)
+            print("You now have ", playerMoney, "coins!")
+
+    # Player V.S. Player
+    elif version == "0":
+        print("This is the 2-Player Version")
+        time.sleep(1.5)
+        print("Choose which person is Player 1 and which is Player 2.")
+
+        # Player 1's Turn
+        player1Cards = []
+        player1Points = 0
+        player1Cards.append(random.choice(cards))
+        player1Cards.append(random.choice(cards))
+        time.sleep(2)
+        print("This is Player 1's turn")
+        time.sleep(1.5)
+        print("Your starting cards: ", player1Cards)
+        for i in player1Cards:
+            if i == "A":
+                player1Points += 1
+            elif i == "J":
+                player1Points += 11
+            elif i == "Q":
+                player1Points += 12
+            elif i == "K":
+                player1Points += 13
+            else:
+                player1Points += int(i)
+        time.sleep(1)
+        print("Your points: ", player1Points)
+        time.sleep(1)
+        bet1 = input("You have " + str(player1Money) + " coins. How much would you like to bet? ")
+        player1Money -= int(bet1)
+        hitStand = "hit"
+        while hitStand == "hit" and player1Points < 21:
+            hitStand = input("Would you like to hit or stand? ")
+            if hitStand == "hit":
+                newCard = random.choice(cards)
+                player1Cards.append(newCard)
+                time.sleep(1)
+                print("You drew a(n) ", newCard)
+                player1Points = 0
+                for i in player1Cards:
+                    if i == "A":
+                        player1Points += 1
+                    elif i == "J":
+                        player1Points += 11
+                    elif i == "Q":
+                        player1Points += 12
+                    elif i == "K":
+                        player1Points += 13
+                    else:
+                        player1Points += int(i)
+                print(player1Points)
+                if player1Points > 21:
+                    print("You bust!")
+
+        # Player 2's Turn
+        player2Cards = []
+        player2Points = 0
+        player2Cards.append(random.choice(cards))
+        player2Cards.append(random.choice(cards))
+        time.sleep(2)
+        print("This is Player 2's turn")
+        time.sleep(1.5)
+        print("Your starting cards: ", player2Cards)
+        for i in player2Cards:
+            if i == "A":
+                player2Points += 1
+            elif i == "J":
+                player2Points += 11
+            elif i == "Q":
+                player2Points += 12
+            elif i == "K":
+                player2Points += 13
+            else:
+                player2Points += int(i)
+        print("Your points: ", player2Points)
+        bet2 = input("You have " + str(player2Money) + " coins. How much would you like to bet? ")
+        player2Money -= int(bet2)
+        hitStand = "hit"
+        while hitStand == "hit" and player2Points < 21:
+            hitStand = input("Would you like to hit or stand? ")
+            if hitStand == "hit":
+                newCard = random.choice(cards)
+                player2Cards.append(newCard)
+                time.sleep(1)
+                print("You drew a(n) ", newCard)
+                player2Points = 0
+                for i in player2Cards:
+                    if i == "A":
+                        player2Points += 1
+                    elif i == "J":
+                        player2Points += 11
+                    elif i == "Q":
+                        player2Points += 12
+                    elif i == "K":
+                        player2Points += 13
+                    else:
+                        player2Points += int(i)
+                print(player2Points)
+                if player2Points > 21:
+                    print("You bust!")
+        print("Both players have finished their turns. It is now time to decide the winner.")
+        if player1Points <= 21 and player2Points <= 21:
+            if player1Points > player2Points:
+                print("Player 1 won!")
+            else:
+                print("Player 2 won!")
+        elif player1Points > 21 and player2Points > 21:
+            if player1Points < player2Points:
+                print("Player 1 won!")
+            else:
+                print("Player 2 won!")
+        elif player1Points > 21 and player2Points <= 21:
+            print("Player 2 won!")
+        else:
+            print("Player 1 won!")
+        if player1Points == player2Points:
+            print("It's a draw!")
+            player1Money += int(bet1)
+            time.sleep(1)
+            print("Player 1 has ", player1Money, "coins!")
+            player2Money += int(bet2)
+            time.sleep(1)
+            print("Player 2 has ", player2Money, "coins!")
+
+    else:
+        print("Please enter either 1 or 0 to play.")
+    playAgain = input("Would you like to play again (yes/no)?")
+print("Thanks for playing!")
